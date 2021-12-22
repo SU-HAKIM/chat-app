@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./bootstrap.css" />
+    <title>Group Chat App</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row d-flex justify-content-center pt-4">
+        <div class="col-md-6 col-12 col-lg-6">
+          <ul class="list-group" id="chat-list"></ul>
+        </div>
+      </div>
+    </div>
+    <!-- chat list -->
+    <div class="container">
+      <div class="row d-flex justify-content-center pt-4">
+        <div class="col-md-6 col-12 col-lg-6">
+          <form>
+            <input
+              type="text"
+              name="message"
+              id="msg"
+              class="form-control"
+              aria-label="hidden"
+            />
+            <button
+              onclick="sendMsg()"
+              class="btn btn-primary mt-4"
+              type="button"
+            >
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const msgInput = document.getElementById("msg");
+    const chat_list = document.getElementById("chat-list");
+    //socket
+    let socket = io();
+    //submit
+    function sendMsg() {
+      socket.emit("chat", msgInput.value);
+      msgInput.value = "";
+    }
+    //listen to server response
+    socket.on("chat_transfer", function (msg) {
+      let list_item = createElement("li", "list-group-item", msg);
+      chat_list.append(list_item);
+    });
+    //create Elements
+    function createElement(tagName, className = "", innerText = "") {
+      let tag = document.createElement(tagName);
+      tag.className = className;
+      tag.innerText = innerText;
+      return tag;
+    }
+  </script>
+</html>
